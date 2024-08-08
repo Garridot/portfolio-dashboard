@@ -4,7 +4,7 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 from .models import User
 from .helpers import validate_password
 
-auth_bp = Blueprint('auth', __name__)
+auth_bp = Blueprint('auth', __name__, url_prefix='/api')
 
 @auth_bp.route("/register", methods=["POST"])
 def register():

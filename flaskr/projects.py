@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required
 from flaskr import db
 from flaskr.models import Project
 
-projects_bp = Blueprint('projects', __name__)
+projects_bp = Blueprint('projects', __name__, url_prefix='/api')
 
 @projects_bp.route("/projects", methods=["POST"])
 @jwt_required()
