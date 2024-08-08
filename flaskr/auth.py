@@ -37,8 +37,6 @@ def login():
 @jwt_required()
 def logout():
     jti = get_jwt_identity()
-    # Aquí deberías implementar una blacklist para revocar el token
-    # Por ahora, solo estamos devolviendo un mensaje
     return jsonify({"message": "Logged out successfully"}), 200
 
 @auth_bp.route("/hello", methods=["GET"])

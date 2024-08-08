@@ -21,6 +21,7 @@ class Project(db.Model):
     id          = db.Column(db.Integer, primary_key=True)
     title       = db.Column(db.String(80), nullable=False)
     description = db.Column(db.Text, nullable=False)
+    skills      = db.Column(db.Text, nullable=False)
     url_github  = db.Column(db.String(80), nullable=False)
     url_project = db.Column(db.String(80), nullable=False)
 
