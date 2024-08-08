@@ -10,6 +10,7 @@ projects_bp = Blueprint('projects', __name__)
 def create_project():
     title = request.json.get("title")
     description = request.json.get("description")
+    skills = request.json.get("skills")
     url_github = request.json.get("url_github")
     url_project = request.json.get("url_project")
     
@@ -22,17 +23,20 @@ def create_project():
     
     return jsonify({"message": "Project created successfully"}), 201
 
+
 @projects_bp.route("/projects", methods=["GET"])
 def get_projects():
     projects = Project.query.all()
-    projects_list = [{"id": p.id, "title": p.title, "description": p.description, "url_github": p.url_github, "url_project": p.url_project} for p in projects]
+    projects_list = [{"id": p.id, "title": p.title, "description": p.description, "skills": p.skills,"url_github": p.url_github, "url_project": p.url_project} for p in projects]
     return jsonify(projects_list), 200
+
 
 @projects_bp.route("/projects/<int:project_id>", methods=["GET"])
 def get_project(project_id):
     project = Project.query.get_or_404(project_id)
-    project_data = {"id": project.id, "title": project.title, "description": project.description, "url_github": project.url_github, "url_project": project.url_project}
+    project_data = {"id": project.id, "title": project.title, "description": project.description,"skills": project.skills, "url_github": project.url_github, "url_project": project.url_project}
     return jsonify(project_data), 200
+
 
 @projects_bp.route("/projects/<int:project_id>", methods=["PUT"])
 @jwt_required()
@@ -40,6 +44,7 @@ def update_project(project_id):
     project = Project.query.get_or_404(project_id)
     title = request.json.get("title")
     description = request.json.get("description")
+    skills = request.json.get("skills")
     url_github = request.json.get("url_github")
     url_project = request.json.get("url_project")
     
@@ -48,6 +53,7 @@ def update_project(project_id):
     
     project.title = title
     project.description = description
+    project.skills = skills
     project.url_github = url_github
     project.url_project = url_project
     db.session.commit()

@@ -1,27 +1,33 @@
 import unittest
 from flaskr import create_app, db
-from flaskr.models import Project
+from flaskr.models import Project, User
 from flask_jwt_extended import create_access_token
 
 class ProjectsTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.app = create_app()
+        self.app = create_app('flaskr.config.TestConfig')
         self.client = self.app.test_client()
-        self.app.config['TESTING'] = True
-        self.app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///test_projects.db"
-        with self.app.app_context():
-            db.create_all()
-            self.access_token = create_access_token(identity='testuser')
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+
+        # Crear un usuario de prueba y obtener un token de acceso
+        user = User(username='testuser', password='Testpassword1!')
+        db.session.add(user)
+        db.session.commit()
+        self.access_token = create_access_token(identity='testuser')
 
     def tearDown(self):
-        with self.app.app_context():
-            db.drop_all()
+        db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
 
     def test_create_project(self):
         response = self.client.post('/projects', json={
             'title': 'New Project',
             'description': 'Project description',
+            'skills': 'skills1, skills2',
             'url_github': 'https://github.com/testuser/newproject',
             'url_project': 'https://newproject.com'
         }, headers={'Authorization': f'Bearer {self.access_token}'})
@@ -40,7 +46,7 @@ class ProjectsTestCase(unittest.TestCase):
 
     def test_get_project(self):
         with self.app.app_context():
-            project = Project(title='New Project', description='Project description', url_github='https://github.com/testuser/newproject', url_project='https://newproject.com')
+            project = Project(title='New Project', description='Project description', skills = 'skills1, skills2', url_github='https://github.com/testuser/newproject', url_project='https://newproject.com')
             db.session.add(project)
             db.session.commit()
             project_id = project.id
@@ -51,7 +57,7 @@ class ProjectsTestCase(unittest.TestCase):
 
     def test_update_project(self):
         with self.app.app_context():
-            project = Project(title='New Project', description='Project description', url_github='https://github.com/testuser/newproject', url_project='https://newproject.com')
+            project = Project(title='New Project', description='Project description', skills = 'skills1, skills2', url_github='https://github.com/testuser/newproject', url_project='https://newproject.com')
             db.session.add(project)
             db.session.commit()
             project_id = project.id
@@ -59,6 +65,7 @@ class ProjectsTestCase(unittest.TestCase):
         response = self.client.put(f'/projects/{project_id}', json={
             'title': 'Updated Project',
             'description': 'Updated description',
+            'skills': 'skills3, skills4',
             'url_github': 'https://github.com/testuser/updatedproject',
             'url_project': 'https://updatedproject.com'
         }, headers={'Authorization': f'Bearer {self.access_token}'})
@@ -67,7 +74,7 @@ class ProjectsTestCase(unittest.TestCase):
 
     def test_delete_project(self):
         with self.app.app_context():
-            project = Project(title='New Project', description='Project description', url_github='https://github.com/testuser/newproject', url_project='https://newproject.com')
+            project = Project(title='New Project', description='Project description', skills = 'skills1, skills2', url_github='https://github.com/testuser/newproject', url_project='https://newproject.com')
             db.session.add(project)
             db.session.commit()
             project_id = project.id
@@ -78,4 +85,5 @@ class ProjectsTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
 
