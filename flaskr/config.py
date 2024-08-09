@@ -1,5 +1,8 @@
 import os
 
+from dotenv import load_dotenv
+load_dotenv()
+
 class Config:
     # General Configurations
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -27,4 +30,5 @@ class TestConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URI')
     BCRYPT_LOG_ROUNDS = 4  # For faster tests
     JWT_SECRET_KEY = os.environ.get('TEST_JWT_SECRET_KEY')
-    # Other test-specific configurations
+    TALISMAN_ENABLED = False
+

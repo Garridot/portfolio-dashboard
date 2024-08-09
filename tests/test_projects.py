@@ -24,7 +24,7 @@ class ProjectsTestCase(unittest.TestCase):
         self.app_context.pop()
 
     def test_create_project(self):
-        response = self.client.post('/projects', json={
+        response = self.client.post('/api/projects', json={
             'title': 'New Project',
             'description': 'Project description',
             'skills': 'skills1, skills2',
@@ -40,7 +40,7 @@ class ProjectsTestCase(unittest.TestCase):
             db.session.add(project)
             db.session.commit()
 
-        response = self.client.get('/projects', headers={'Authorization': f'Bearer {self.access_token}'})
+        response = self.client.get('/api/projects', headers={'Authorization': f'Bearer {self.access_token}'})
         self.assertEqual(response.status_code, 200)
         self.assertTrue(len(response.get_json()) > 0)
 
@@ -51,7 +51,7 @@ class ProjectsTestCase(unittest.TestCase):
             db.session.commit()
             project_id = project.id
 
-        response = self.client.get(f'/projects/{project_id}', headers={'Authorization': f'Bearer {self.access_token}'})
+        response = self.client.get(f'/api/projects/{project_id}', headers={'Authorization': f'Bearer {self.access_token}'})
         self.assertEqual(response.status_code, 200)
         self.assertIn('New Project', response.get_json()['title'])
 
@@ -62,7 +62,7 @@ class ProjectsTestCase(unittest.TestCase):
             db.session.commit()
             project_id = project.id
 
-        response = self.client.put(f'/projects/{project_id}', json={
+        response = self.client.put(f'/api/projects/{project_id}', json={
             'title': 'Updated Project',
             'description': 'Updated description',
             'skills': 'skills3, skills4',
@@ -79,7 +79,7 @@ class ProjectsTestCase(unittest.TestCase):
             db.session.commit()
             project_id = project.id
 
-        response = self.client.delete(f'/projects/{project_id}', headers={'Authorization': f'Bearer {self.access_token}'})
+        response = self.client.delete(f'/api/projects/{project_id}', headers={'Authorization': f'Bearer {self.access_token}'})
         self.assertEqual(response.status_code, 200)
         self.assertIn('Project deleted successfully', response.get_json()['message'])
 

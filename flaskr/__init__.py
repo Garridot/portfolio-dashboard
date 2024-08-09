@@ -23,7 +23,8 @@ def create_app(config_class='flaskr.config.Config'):
             methods=["GET", "POST", "PUT", "DELETE"],
             allow_headers=["Content-Type", "Authorization"])
 
-    Talisman(app, content_security_policy = app.config['CSP'])             
+    if app.config.get('TALISMAN_ENABLED', True):
+        Talisman(app, content_security_policy=app.config['CSP'])           
 
     db.init_app(app)
     migrate.init_app(app, db)
