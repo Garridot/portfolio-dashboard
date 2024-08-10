@@ -12,7 +12,7 @@ migrate = Migrate()
 jwt = JWTManager()
 bcrypt = Bcrypt()
 
-def create_app(config_class='flaskr.config.Config'):
+def create_app(config_class='flaskr.config.ProductionConfig'):
     app = Flask(__name__, instance_relative_config=True)    
     
     app.config.from_object(config_class)
